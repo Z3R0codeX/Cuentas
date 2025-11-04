@@ -16,4 +16,20 @@ class transaction extends Model
         'account_id',
         'category_id',
     ];
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function account()
+    {
+        return $this->hasOne(account::class, 'id', 'account_id');
+    }   
+
+    public function category()
+    {
+        return $this->hasOne(categorie::class, 'id', 'category_id');
+    }   
+
 }
