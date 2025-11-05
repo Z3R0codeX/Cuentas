@@ -32,7 +32,21 @@ class TransactionsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate = $request->validate([
+            'ammount' => 'required|numeric',
+            'type' => 'required|string|min:2',
+            'description' => 'required|string|min:2',
+            'user_id' => 'required',
+            'account_id' => 'required',
+            'category_id' => 'required',
+        ]);
+        $data = transaction::create($validate);
+
+        return response()->json([
+            'status' => 'ok',  
+            'message' => 'Transacción creada exitosamente',
+            'data' => $data
+        ]);
     }
 
     /**
@@ -40,7 +54,18 @@ class TransactionsController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $data = transaction::find($id);
+        if ($data) {
+            return response()->json([
+                'status' => 'ok',
+                'data' => $data        
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Transacción no encontrada'        
+            ], 404);
+        }
     }
 
     /**
@@ -56,7 +81,23 @@ class TransactionsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'ammount' => 'required|numeric',
+            'type' => 'required|string|min:2',
+            'description' => 'required|string|min:2',
+            'user_id' => 'required',
+            'account_id' => 'required',
+            'category_id' => 'required',
+        ]);
+
+        $data = transaction::findOrFail($id);
+        $data->update($validated);
+
+        return response()->json([
+            'status' => 'ok',  
+            'message' => 'Transacción actualizada exitosamente',
+            'data' => $data
+        ]);
     }
 
     /**
@@ -64,6 +105,13 @@ class TransactionsController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $data = transaction::findOrFail($id);
+        if ($data) {
+        $data->delete();
+        }
+          return response()->json([
+            'status' => 'ok',  
+            'message' => 'Transacción eliminada exitosamente',
+        ]);
     }
 }

@@ -33,7 +33,20 @@ class AcountsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|min:2',
+            'ammount' => 'required|numeric',
+            'status' => 'required',
+            'user_id' => 'required',
+        ]);
+
+        $data = account::create($validated);
+
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Cuenta creada exitosamente',
+            'data' => $data        
+        ]);
     }
 
     /**
@@ -41,7 +54,20 @@ class AcountsController extends Controller
      */
     public function show(string $id)
     {
-        //
+         $data = account::find($id);
+        if ($data) {
+        
+            return response()->json([
+                'status' => 'ok',
+                'message' => 'Cuenta encontrada',
+                'data' => $data        
+            ]);
+
+        }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Cuenta no encontrada',        
+        ],400);
     }
 
     /**
@@ -57,7 +83,27 @@ class AcountsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'sometimes|required|string|min:2',
+            'ammount' => 'sometimes|required|numeric',
+            'status' => 'sometimes|required',
+            'user_id' => 'sometimes|required',
+        ]);
+
+        $data = account::findOrFail($id);
+        if ($data) {
+            $data->update($validated);
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Cuenta actualizada exitosamente',
+            'data' => $data        
+        ]);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Cuenta no encontrada',        
+        ],400);
     }
 
     /**
@@ -65,6 +111,36 @@ class AcountsController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $data = account::findOrFail($id);
+        if ($data) {
+        $data->delete();
+        }
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Cuenta eliminada exitosamente',        
+        ]);
     }
+
+    public function ChangeStatus(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required',
+        ]);
+
+        $data = account::findOrFail($id);
+        if ($data) {
+            $data->update($validated);
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Estado de la cuenta actualizado exitosamente',
+            'data' => $data        
+        ]);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Cuenta no encontrada',        
+        ],400);
+    }
+
 }
