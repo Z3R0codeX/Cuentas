@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AcountsController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\TransactionsController;
+use App\Http\Controllers\AuthController;
+
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::resource('acounts', AcountsController::class);
 Route::resource('categories', CategoriesController::class);
